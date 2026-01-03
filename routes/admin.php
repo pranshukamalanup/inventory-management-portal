@@ -2,23 +2,28 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+/*
+|--------------------------------------------------------------------------
+| Admin Auth Routes (NO auth middleware here)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/login', function () {
+    return 'Admin Login Page';
 });
 
 /*
 |--------------------------------------------------------------------------
-| Mandatory login route (Laravel core requirement)
+| Admin Protected Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/login', function () {
-    return redirect('/customer/login');
-})->name('login');
 
-/*
-|--------------------------------------------------------------------------
-| Load role based routes
-|--------------------------------------------------------------------------
-*/
-require __DIR__.'/admin.php';
-require __DIR__.'/customer.php';
+Route::prefix('admin')
+    ->middleware('auth:admin')
+    ->group(function () {
+
+        Route::get('/dashboard', function () {
+            return 'Admin Dashboard Here';
+        });
+
+    });
