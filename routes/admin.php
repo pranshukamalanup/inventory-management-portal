@@ -1,16 +1,22 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
-| Admin Auth Routes (NO auth middleware here)
+| Admin Authentication Routes (NO auth middleware)
 |--------------------------------------------------------------------------
 */
 
-Route::get('/admin/login', function () {
-    return 'Admin Login Page';
-});
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm']);
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
+
+Route::get('/admin/register', [AdminAuthController::class, 'showRegisterForm']);
+Route::post('/admin/register', [AdminAuthController::class, 'register']);
+
+Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +28,6 @@ Route::prefix('admin')
     ->middleware('auth:admin')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return 'Admin Dashboard Here';
-        });
+        Route::get('/dashboard', [AdminDashboardController::class, 'index']);
 
     });

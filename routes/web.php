@@ -3,8 +3,18 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+
+    if (Auth::guard('admin')->check()) {
+        return redirect('/admin/dashboard');
+    }
+
+    if (Auth::guard('customer')->check()) {
+        return redirect('/customer/dashboard');
+    }
+
+    return view('home'); // landing page
 });
+
 
 /*
 |--------------------------------------------------------------------------
