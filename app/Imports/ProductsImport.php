@@ -3,27 +3,34 @@
 namespace App\Imports;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Support\Facades\Storage;
 
-class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading
+class ProductsImport implements
+    ToModel,
+    WithHeadingRow,
+    WithChunkReading,
+    ShouldQueue
 {
     public function model(array $row)
     {
         return new Product([
-            'name'        => $row['name'],
+            'name'        => $row['name'] ?? '',
             'description' => $row['description'] ?? null,
-            'price'       => $row['price'],
-            'category'    => $row['category'],
-            'stock'       => $row['stock'],
-            'image'       => $row['image'] ?: 'products/default.png',
+            'price'       => $row['price'] ?? 0,
+            'category'    => $row['category'] ?? 'General',
+            'stock'       => $row['stock'] ?? 0,
+            'image'       => $row['image'] && Storage::disk('public')->exists($row['image'])
+                                ? $row['image']
+                                : 'products/default.png',
         ]);
     }
 
     public function chunkSize(): int
     {
-        return 1000; // safe for big files
+        return 1000; // safe for 100k rows
     }
 }
