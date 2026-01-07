@@ -1,33 +1,34 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AuthController as AdminAuthController;
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductImportController;
 
-/*
-|--------------------------------------------------------------------------
-| Admin Authentication Routes (NO auth middleware)
-|--------------------------------------------------------------------------
-*/
 
-Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm']);
-Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::get('/admin/login', [AuthController::class, 'showLoginForm']);
+Route::post('/admin/login', [AuthController::class, 'login']);
 
-Route::get('/admin/register', [AdminAuthController::class, 'showRegisterForm']);
-Route::post('/admin/register', [AdminAuthController::class, 'register']);
+Route::get('/admin/register', [AuthController::class, 'showRegisterForm']);
+Route::post('/admin/register', [AuthController::class, 'register']);
 
-Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
+Route::post('/admin/logout', [AuthController::class, 'logout']);
 
-/*
-|--------------------------------------------------------------------------
-| Admin Protected Routes
-|--------------------------------------------------------------------------
-*/
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 
-Route::prefix('admin')
-    ->middleware('auth:admin')
-    ->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
 
-        Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+    Route::get('/products/create', [ProductController::class, 'create']);
+    Route::post('/products', [ProductController::class, 'store']);
 
-    });
+    Route::get('/products/{id}/edit', [ProductController::class, 'edit']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+    Route::get('/products/import', [ProductImportController::class, 'showImportForm']);
+    Route::post('/products/import', [ProductImportController::class, 'import']);
+
+});
