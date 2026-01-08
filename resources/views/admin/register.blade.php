@@ -3,51 +3,91 @@
 @section('title', 'Admin Registration')
 
 @section('content')
-    <div class="card">
-        <h3 style="text-align:center; margin-bottom:20px;">Admin Registration</h3>
 
-        {{-- Validation Errors --}}
-        @if ($errors->any())
-            <div style="background:#fdecea; padding:10px; margin-bottom:15px; border-radius:4px;">
-                <ul style="margin:0; padding-left:18px; color:#e74c3c;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+<div class="container d-flex justify-content-center align-items-center" style="min-height:85vh;">
+    <div class="col-md-6 col-lg-5">
+
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4">
+
+                {{-- Heading --}}
+                <h3 class="text-center fw-bold mb-2">Admin Registration</h3>
+                <p class="text-center text-muted mb-4">
+                    Create a new admin account
+                </p>
+
+                {{-- Validation Errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0 small">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                {{-- Registration Form --}}
+                <form method="POST" action="/admin/register">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text"
+                               name="name"
+                               class="form-control"
+                               placeholder="Enter full name"
+                               value="{{ old('name') }}"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address</label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="Enter email"
+                               value="{{ old('email') }}"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password</label>
+                        <input type="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Create password"
+                               required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Confirm Password</label>
+                        <input type="password"
+                               name="password_confirmation"
+                               class="form-control"
+                               placeholder="Confirm password"
+                               required>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary w-100 fw-semibold">
+                        Register Admin
+                    </button>
+                </form>
+
+                <hr class="my-4">
+
+                <p class="text-center mb-0">
+                    Already registered?
+                    <a href="/admin/login" class="fw-semibold text-decoration-none">
+                        Login here
+                    </a>
+                </p>
+
             </div>
-        @endif
+        </div>
 
-        <form method="POST" action="/admin/register">
-            @csrf
-
-            <input type="text"
-                   name="name"
-                   placeholder="Full Name"
-                   value="{{ old('name') }}"
-                   required>
-
-            <input type="email"
-                   name="email"
-                   placeholder="Email"
-                   value="{{ old('email') }}"
-                   required>
-
-            <input type="password"
-                   name="password"
-                   placeholder="Password"
-                   required>
-
-            <input type="password"
-                   name="password_confirmation"
-                   placeholder="Confirm Password"
-                   required>
-
-            <button type="submit">Register</button>
-        </form>
-
-        <p style="text-align:center; margin-top:15px;">
-            Already registered?
-            <a href="/admin/login">Login</a>
-        </p>
     </div>
+</div>
+
 @endsection
