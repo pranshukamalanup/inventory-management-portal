@@ -36,7 +36,7 @@
 
         {{-- Online Customers --}}
         <div class="col-md-4">
-            <a href="/admin/online/customers" class="text-decoration-none">
+            <a href="#" class="text-decoration-none">
                 <div class="card stat-card bg-success text-white">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
@@ -53,7 +53,7 @@
 
         {{-- Online Admins --}}
         <div class="col-md-4">
-            <a href="/admin/online/admins" class="text-decoration-none">
+            <a href="#" class="text-decoration-none">
                 <div class="card stat-card bg-dark text-white">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>

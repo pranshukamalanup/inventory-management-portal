@@ -120,11 +120,6 @@
                                         ? asset('storage/'.$product->image)
                                         : asset('images/default-product.png') }}"
                                     alt="{{ $product->name }}">
-
-                                {{-- WISHLIST --}}
-                                <button class="wishlist-btn" title="Add to wishlist">
-                                    ❤️
-                                </button>
                             </div>
 
                             <div class="card-body d-flex flex-column">

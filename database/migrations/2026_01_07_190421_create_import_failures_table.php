@@ -6,25 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
-        Schema::create('import_failures', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('import_batch_id')->constrained()->cascadeOnDelete();
-            $table->json('row_data');
-            $table->text('error');
-            $table->timestamps();
-        });
+        if (Schema::hasTable('user_presences') &&
+            !Schema::hasColumn('user_presences', 'last_seen')) {
+
+            Schema::table('user_presences', function (Blueprint $table) {
+                $table->timestamp('last_seen')->nullable()->after('is_online');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('import_failures');
+        if (Schema::hasTable('user_presences') &&
+            Schema::hasColumn('user_presences', 'last_seen')) {
+
+            Schema::table('user_presences', function (Blueprint $table) {
+                $table->dropColumn('last_seen');
+            });
+        }
     }
 };
