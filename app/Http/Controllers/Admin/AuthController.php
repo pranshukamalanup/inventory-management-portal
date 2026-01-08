@@ -7,6 +7,8 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\UserPresence;
+use App\Events\UserPresenceUpdated;
 
 class AuthController extends Controller
 {
@@ -40,9 +42,20 @@ class AuthController extends Controller
         );
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            $request->session()->regenerate();
 
-            // redirect to intended page or dashboard
+            UserPresence::updateOrCreate(
+                [
+                    'user_id'   => auth('admin')->id(),
+                    'user_type' => 'admin',
+                ],
+                [
+                    'is_online' => true,
+                    'last_seen' => now(),
+                ]
+            );
+
+            broadcast(new UserPresenceUpdated())->toOthers();
+
             return redirect()->intended('/admin/dashboard');
         }
 
@@ -100,6 +113,15 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        UserPresence::where('user_id', auth('admin')->id())
+            ->where('user_type', 'admin')
+            ->update([
+                'is_online' => false,
+                'last_seen' => now(),
+            ]);
+
+        broadcast(new UserPresenceUpdated())->toOthers();
+
         Auth::guard('admin')->logout();
 
         $request->session()->invalidate();

@@ -7,6 +7,8 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\UserPresence;
+use App\Events\UserPresenceUpdated;
 
 class AuthController extends Controller
 {
@@ -41,6 +43,20 @@ class AuthController extends Controller
 
         if (Auth::guard('customer')->attempt($credentials)) {
             $request->session()->regenerate();
+
+            UserPresence::updateOrCreate(
+                [
+                    'user_id' => auth('customer')->id(),
+                    'user_type' => 'customer',
+                ],
+                [
+                    'is_online' => true,
+                    'last_seen' => now(),
+                ]
+            );
+
+            broadcast(new UserPresenceUpdated())->toOthers();
+            
             return redirect()->intended('/customer/dashboard');
         }
 
@@ -98,6 +114,15 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        UserPresence::where('user_id', auth('customer')->id())
+            ->where('user_type', 'customer')
+            ->update([
+                'is_online' => false,
+                'last_seen' => now(),
+            ]);
+
+        broadcast(new UserPresenceUpdated())->toOthers();
+
         Auth::guard('customer')->logout();
 
         $request->session()->invalidate();
