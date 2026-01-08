@@ -7,13 +7,23 @@
 <div class="container-fluid">
 
     {{-- Welcome --}}
-    <div class="mb-4">
-        <h3 class="fw-bold mb-1">
-            Welcome, {{ auth('admin')->user()->name }}
-        </h3>
-        <p class="text-muted mb-0">
-            Admin Control Panel Overview
-        </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">
+                Welcome, {{ auth('admin')->user()->name }}
+            </h3>
+            <p class="text-muted mb-0">
+                Admin Control Panel Overview
+            </p>
+        </div>
+
+        {{-- Logout Button --}}
+        <form method="POST" action="{{ route('admin.logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+                Logout
+            </button>
+        </form>
     </div>
 
     {{-- Stats Cards --}}

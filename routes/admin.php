@@ -15,7 +15,8 @@ Route::post('/admin/login', [AuthController::class, 'login']);
 Route::get('/admin/register', [AuthController::class, 'showRegisterForm']);
 Route::post('/admin/register', [AuthController::class, 'register']);
 
-Route::post('/admin/logout', [AuthController::class, 'logout']);
+Route::post('/admin/logout', [AuthController::class, 'logout'])
+    ->name('admin.logout');
 
 Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
