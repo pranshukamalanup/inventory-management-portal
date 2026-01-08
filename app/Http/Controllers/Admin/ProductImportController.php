@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
+use App\Models\ImportBatch;
 
 class ProductImportController extends Controller
 {
     public function showImportForm()
     {
         return view('admin.products.import');
-    }
+    }    
 
     public function import(Request $request)
     {
@@ -20,13 +21,17 @@ class ProductImportController extends Controller
             'file' => 'required|file|mimes:csv,xlsx|max:204800',
         ]);
 
+        $batch = ImportBatch::create([
+            'status' => 'pending',
+        ]);
+
         Excel::queueImport(
-            new ProductsImport,
+            new ProductsImport($batch->id),
             $request->file('file')
         );
 
-        // IMPORTANT: redirect immediately (no wait)
         return redirect('/admin/products')
-            ->with('success', 'Import started in background. Data will appear shortly.');
+            ->with('success', 'Import started in background.');
     }
+
 }

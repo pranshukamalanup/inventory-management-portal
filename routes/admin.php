@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImportController;
+use App\Models\ImportBatch;
+use App\Models\ImportFailure;
 
 
 Route::get('/admin/login', [AuthController::class, 'showLoginForm']);
@@ -32,3 +34,20 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::post('/products/import', [ProductImportController::class, 'import']);
 
 });
+
+Route::prefix('admin/imports')->middleware('auth:admin')->group(function () {
+
+    // Import history (index)
+    Route::get('/', function () {
+        $imports = ImportBatch::latest()->get();
+        return view('admin.products.import-history', compact('imports'));
+    })->name('admin.imports.index');
+
+    // Failed rows for a specific import
+    Route::get('{id}/failed', function ($id) {
+        $rows = ImportFailure::where('import_batch_id', $id)->get();
+        return view('admin.products.import-failed', compact('rows'));
+    })->name('admin.imports.failed');
+
+});
+

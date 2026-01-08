@@ -13,12 +13,16 @@
             </h4>
 
             <div class="d-flex gap-2">
+                <a href="/admin/products/create" class="btn btn-success btn-sm">
+                    + Add Product
+                </a>
+
                 <a href="/admin/products/import" class="btn btn-outline-primary btn-sm">
                     Import Products
                 </a>
 
-                <a href="/admin/products/create" class="btn btn-success btn-sm">
-                    + Add Product
+                <a href="/admin/imports" class="btn btn-outline-secondary btn-sm">
+                    Import History
                 </a>
             </div>
 
